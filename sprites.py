@@ -26,7 +26,7 @@ class Player(Sprite):
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         self.rect.x -= 1
         if hits: 
-            self.vel.y = -20
+            self.vel.y = -15
     def update(self):
         self.acc = vec(0, 0.5)
         keys = pg.key.get_pressed()
@@ -34,8 +34,8 @@ class Player(Sprite):
             self.acc.x = -PLAYER_ACC
         if keys[pg.K_d]:
             self.acc.x = PLAYER_ACC
-        if keys[pg.K_w]:
-            self.acc.y = -PLAYER_ACC
+        # if keys[pg.K_w]:
+        #     self.acc.y = -PLAYER_ACC
         if keys[pg.K_s]:
             self.acc.y = PLAYER_ACC
         # ALERT - Mr. Cozort did this WAY differently than Mr. Bradfield...

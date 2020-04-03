@@ -31,14 +31,17 @@ class Game:
         self.player = Player(self)
         self.all_sprites.add(self.player)
         ground = Platform(0, HEIGHT-40, WIDTH, 40)
-        plat1 = Platform(50, 400, 150, 20)
-        plat2 = Platform(200, 300, 150, 20)
+        plat1 = Platform(100, 400, 150, 20)
+        plat2 = Platform(750, 400, 150, 20)
+        plat3 = Platform(425, 250, 150, 20)
         self.all_sprites.add(ground)
         self.platforms.add(ground)
         self.all_sprites.add(plat1)
         self.platforms.add(plat1)
         self.all_sprites.add(plat2)
         self.platforms.add(plat2)
+        self.all_sprites.add(plat3)
+        self.platforms.add(plat3)
         # self.all_sprites.add(plat2)
         # self.platforms.add(plat2)
         self.run()
@@ -70,7 +73,13 @@ class Game:
             else:
                 self.player.vel.y = 0
                 self.player.pos.y = hits[0].rect.top+1
-            
+            if self.player.rect.top <= HEIGHT / 4:
+                    self.player.pos.y += abs(self.player.vel.y)
+                    for plat in self.platforms:
+                            plat.rect.y += abs(self.player.vel.y)
+                            if plat.rect.top >= HEIGHT:
+                                plat.kill()
+                                print(len(self.platforms))
 
     def events(self):
         # Game Loop - events
@@ -83,7 +92,7 @@ class Game:
 
     def draw(self):
         # Game Loop - draw
-        self.screen.fill(BLACK)
+        self.screen.fill(LIGHTBLUE)
         self.all_sprites.draw(self.screen)
         # *after* drawing everything, flip the display
         pg.display.flip()
