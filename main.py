@@ -31,6 +31,7 @@ class Game:
         self.player = Player(self)
         self.all_sprites.add(self.player)
         ground = Platform(0, HEIGHT-40, WIDTH, 40)
+        # Created 3 platforms and locations
         plat1 = Platform(100, 400, 150, 20)
         plat2 = Platform(750, 400, 150, 20)
         plat3 = Platform(425, 250, 150, 20)
@@ -92,6 +93,7 @@ class Game:
 
     def draw(self):
         # Game Loop - draw
+        # Changed background color
         self.screen.fill(LIGHTBLUE)
         self.all_sprites.draw(self.screen)
         # *after* drawing everything, flip the display

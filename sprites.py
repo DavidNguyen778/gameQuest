@@ -21,6 +21,7 @@ class Player(Sprite):
         self.hitpoints = 100
     def myMethod(self):
         pass
+    # Changed height of jump
     def jump(self):
         self.rect.x += 1
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
@@ -34,10 +35,13 @@ class Player(Sprite):
             self.acc.x = -PLAYER_ACC
         if keys[pg.K_d]:
             self.acc.x = PLAYER_ACC
-        # if keys[pg.K_w]:
-        #     self.acc.y = -PLAYER_ACC
+        # When press w, do higher jump
+        if keys[pg.K_w]:
+            self.acc.y = .3
+        # When press s, do ground pound
         if keys[pg.K_s]:
-            self.acc.y = PLAYER_ACC
+            self.acc.y = 2
+            self.vel.x = 0.01
         # ALERT - Mr. Cozort did this WAY differently than Mr. Bradfield...
         if keys[pg.K_SPACE]:
             self.jump()
@@ -60,6 +64,7 @@ class Player(Sprite):
 
         self.rect.midbottom = self.pos
 class Platform(Sprite):
+    # Changed platform color to green
     def __init__(self, x, y, w, h):
         Sprite.__init__(self)
         self.image = pg.Surface((w, h))
