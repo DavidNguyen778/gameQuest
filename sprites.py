@@ -38,10 +38,14 @@ class Player(Sprite):
         # When press w, do higher jump
         if keys[pg.K_w]:
             self.acc.y = .3
+            if keys[pg.K_d]:
+                self.acc.x = 0.07
+            if keys[pg.K_a]:
+                self.acc.x = -0.07
         # When press s, do ground pound
         if keys[pg.K_s]:
             self.acc.y = 2
-            self.vel.x = 0.01
+            self.vel.x = 0
         # ALERT - Mr. Cozort did this WAY differently than Mr. Bradfield...
         if keys[pg.K_SPACE]:
             self.jump()
