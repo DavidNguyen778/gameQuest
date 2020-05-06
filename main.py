@@ -14,6 +14,12 @@ import random
 from settings import *
 from sprites import *
 
+def draw_player_health(surf, x, y, w):
+    outline_rect = pg.Rect(x, y, 100, 20)
+    fill_rect = pg.Rect(x, y, w, 20)
+    pg.draw.rect(surf, RED, fill_rect)
+    pg.draw.rect(surf, WHITE, outline_rect, 2)
+
 class Game:
     def __init__(self):
         # initialize game window, etc
@@ -30,6 +36,8 @@ class Game:
         self.platforms = pg.sprite.Group()
         self.player = Player(self)
         self.all_sprites.add(self.player)
+        self.mob = Mob(self)
+        self.all_sprites.add(self.mob)
         ground = Platform(0, HEIGHT-40, WIDTH, 40)
         # Created 3 platforms and locations
         plat1 = Platform(100, 400, 150, 20)
@@ -67,10 +75,9 @@ class Game:
                 self.player.rect.top = hits[0].rect.bottom + 5
                 self.player.hitpoints -= 10
                 print(self.player.hitpoints)
-            # print("it collided")
-            # if self.player.hitpoints < 0:
-            #     pg.quit()
-            #     print("You ran outta hitpoints!")
+                if self.player.hitpoints == 0:
+                    pg.quit()
+                    print("You ran outta hitpoints!")
             else:
                 self.player.vel.y = 0
                 self.player.pos.y = hits[0].rect.top+1
@@ -96,6 +103,7 @@ class Game:
         # Changed background color
         self.screen.fill(LIGHTBLUE)
         self.all_sprites.draw(self.screen)
+        draw_player_health(self.screen, 10, 10, self.player.hitpoints)
         # *after* drawing everything, flip the display
         pg.display.flip()
 

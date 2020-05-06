@@ -14,8 +14,9 @@ class Player(Sprite):
         self.image = pg.Surface((30, 40))
         self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
+    # Position of player at t=0
         self.rect.center = (WIDTH / 2, HEIGHT / 2)
-        self.pos = vec(WIDTH / 2, HEIGHT / 2)
+        self.pos = vec(WIDTH / 2, HEIGHT / 1.5)
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
         self.hitpoints = 100
@@ -35,14 +36,14 @@ class Player(Sprite):
             self.acc.x = -PLAYER_ACC
         if keys[pg.K_d]:
             self.acc.x = PLAYER_ACC
-        # When press w, do higher jump
+        # When press w, do higher jump and slow movement
         if keys[pg.K_w]:
             self.acc.y = .3
             if keys[pg.K_d]:
                 self.acc.x = 0.07
             if keys[pg.K_a]:
                 self.acc.x = -0.07
-        # When press s, do ground pound
+        # When press s, do ground pound and completely stop acceleration
         if keys[pg.K_s]:
             self.acc.y = 2
             self.vel.x = 0
@@ -65,8 +66,26 @@ class Player(Sprite):
             self.pos.y = HEIGHT
         if self.pos.y > HEIGHT:
             self.pos.y = 0
-
         self.rect.midbottom = self.pos
+
+class Mob(Sprite):
+    def __init__(self, game):
+        Sprite.__init__(self)
+        self.game = game
+        self.image = pg.Surface((40,40))
+        self.image.fill(PURPLE)
+        self.rect = self.image.get_rect()
+
+        self.rect.center = (WIDTH / 1.1, HEIGHT / 1.1)
+        self.pos = vec(WIDTH / 2, HEIGHT / 1.5)
+        self.vel = vec(0, 0)
+        self.acc = vec(0, 0)
+
+    def update(self):
+        self.acc = vec(0, 0.5)
+        self.vel.x = 2
+        self.vel.y = 2
+
 class Platform(Sprite):
     # Changed platform color to green
     def __init__(self, x, y, w, h):
