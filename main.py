@@ -67,7 +67,8 @@ class Game:
     def update(self):
         # Game Loop - Update
         self.all_sprites.update()
-        hits = pg.sprite.spritecollide(self.player, self.platforms, False)
+        # Can't add self.mob to spritecollide list?! #
+        hits = pg.sprite.spritecollide(self.player, self.mob, self.platforms, False)
         if hits:
             if self.player.rect.top > hits[0].rect.top:
                 print("i hit my head")
