@@ -16,7 +16,7 @@ class Player(Sprite):
         self.rect = self.image.get_rect()
     # Position of player at t=0
         self.rect.center = (WIDTH / 2, HEIGHT / 2)
-        self.pos = vec(WIDTH / 2, HEIGHT / 1.5)
+        self.pos = vec(WIDTH / 2, HEIGHT / 5)
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
         self.hitpoints = 100
@@ -50,6 +50,8 @@ class Player(Sprite):
         # ALERT - Mr. Cozort did this WAY differently than Mr. Bradfield...
         if keys[pg.K_SPACE]:
             self.jump()
+            print("I jumped!")
+            pass
 
         # apply friction
         self.acc.x += self.vel.x * PLAYER_FRICTION
@@ -58,14 +60,15 @@ class Player(Sprite):
         self.vel += self.acc
         self.pos += self.vel + 0.5 * self.acc
         # wrap around the sides of the screen
-        if self.pos.x > WIDTH:
-            self.pos.x = 0
-        if self.pos.x < 0:
-            self.pos.x = WIDTH
-        if self.pos.y < 0:
-            self.pos.y = HEIGHT
-        if self.pos.y > HEIGHT:
-            self.pos.y = 0
+
+        # if self.pos.x > WIDTH:
+        #     self.pos.x = 0
+        # if self.pos.x < 0:
+        #     self.pos.x = WIDTH
+        # if self.pos.y < 0:
+        #     self.pos.y = HEIGHT
+        # if self.pos.y > HEIGHT:
+        #     self.pos.y = 0
         self.rect.midbottom = self.pos
 
 class Mob(Sprite):
@@ -93,6 +96,7 @@ class Mob(Sprite):
         self.vel += self.acc
         self.pos += self.vel + 0.5 * self.acc
         # wrap around the sides of the screen
+
         if self.pos.x > WIDTH:
             self.pos.x = 0
         if self.pos.x < 0:
@@ -101,14 +105,62 @@ class Mob(Sprite):
             self.pos.y = HEIGHT
         if self.pos.y > HEIGHT:
             self.pos.y = 0
+        
         self.rect.midbottom = self.pos
 
 class Platform(Sprite):
     # Changed platform color to green
+    # def __init__(self, x, y, w, h):
+    #     Sprite.__init__(self)
+    #     self.image = pg.Surface((w, h))
+    #     self.image.fill(GREEN)
+    #     self.rect = self.image.get_rect()
+    #     self.rect.x = x
+    #     self.rect.y = y
     def __init__(self, x, y, w, h):
         Sprite.__init__(self)
         self.image = pg.Surface((w, h))
         self.image.fill(GREEN)
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.center = (x, y)
+        self.pos = vec(x, y)
+        self.vel = vec(0, 0)
+        self.acc = vec(0, 0)
+        self.w = w
+        self.h = h
+    def blitme(self, x, y):
+        self.screen.blit(self.image, (x, y))
+    def update(self):
+        self.acc = vec(0, 0)
+        # apply friction
+        self.acc.x += self.vel.x * PLAYER_FRICTION
+        # self.acc.y += self.vel.y * PLAYER_FRICTION
+        # equations of motion
+        self.vel += self.acc
+        self.pos += self.vel + 0.5 * self.acc
+        self.rect.midbottom = self.pos
+
+class Ground(Sprite):
+    def __init__(self, x, y, w, h):
+        Sprite.__init__(self)
+        self.image = pg.Surface((w, h))
+        self.image.fill(GREEN)
+        self.rect = self.image.get_rect()
+        self.pos = vec(x, y)
+        self.vel = vec(0, 0)
+        self.acc = vec(0, 0)
+        self.w = w
+        self.h = h
+    def blitme(self, x, y):
+        self.screen.blit(self.image, (x, y))
+    def update(self):
+        pass
+
+        # self.acc = vec(0, 0)
+        # # apply friction
+        # self.acc.x += self.vel.x * PLAYER_FRICTION
+        # # self.acc.y += self.vel.y * PLAYER_FRICTION
+        # # equations of motion
+        # self.vel += self.acc
+        # self.pos += self.vel + 0.5 * self.acc
+        # self.rect.x = self.pos

@@ -34,17 +34,21 @@ class Game:
         # start a new game
         self.all_sprites = Group()
         self.platforms = pg.sprite.Group()
+        self.static_platforms = Group()
         self.player = Player(self)
         self.all_sprites.add(self.player)
         self.mob = Mob(self)
         self.all_sprites.add(self.mob)
-        ground = Platform(0, HEIGHT-40, WIDTH, 40)
+        # ground = Platform(0, HEIGHT-40, WIDTH, 40)
+        ground = Ground(0, HEIGHT - 50, WIDTH, 50)
+        ground.rect.x = 0
+        ground.rect.y = HEIGHT - 50
         # Created 3 platforms and locations
         plat1 = Platform(100, 400, 150, 20)
         plat2 = Platform(750, 400, 150, 20)
         plat3 = Platform(425, 250, 150, 20)
         self.all_sprites.add(ground)
-        self.platforms.add(ground)
+        self.static_platforms.add(ground)
         self.all_sprites.add(plat1)
         self.platforms.add(plat1)
         self.all_sprites.add(plat2)
@@ -68,17 +72,36 @@ class Game:
         # Game Loop - Update
         self.all_sprites.update()
         # Can't add self.mob to spritecollide list?! #
-        hits = pg.sprite.spritecollide(self.player, self.mob, self.platforms, False)
+        mhits = pg.sprite.collide_rect(self.player, self.mob)
+        if mhits:
+            self.player.hitpoints -= 1
+            print(self.player.hitpoints)
+
+        # hits = pg.sprite.spritecollide(self.player, self.platforms, False)
+        # if hits:
+        #     if self.player.rect.top > hits[0].rect.top:
+        #         print("i hit my head")
+        #         self.player.vel.y = 15
+        #         self.player.rect.top = hits[0].rect.bottom + 5
+        #         self.player.hitpoints -= 5
+        #         # print("hitpoints are now " + str(self.player.hitpoints))
+        #         # print(self.player.hitpoints)
+        #     # print("it collided")
+        #     else:
+        #         self.player.vel.y = 0
+        #         self.player.pos.y = hits[0].rect.top+1
+
+        hits = pg.sprite.spritecollide(self.player, self.platforms, False)
         if hits:
             if self.player.rect.top > hits[0].rect.top:
                 print("i hit my head")
                 self.player.vel.y = 10
                 self.player.rect.top = hits[0].rect.bottom + 5
-                self.player.hitpoints -= 10
+                self.player.hitpoints -= 1
                 print(self.player.hitpoints)
-                if self.player.hitpoints == 0:
-                    pg.quit()
-                    print("You ran outta hitpoints!")
+                # if self.player.hitpoints == 0:
+                #     pg.quit()
+                #     print("You ran outta hitpoints!")
             else:
                 self.player.vel.y = 0
                 self.player.pos.y = hits[0].rect.top+1
@@ -89,6 +112,34 @@ class Game:
                             if plat.rect.top >= HEIGHT:
                                 plat.kill()
                                 print(len(self.platforms))
+
+            if self.player.rect.top > HEIGHT:
+                self.player.hitpoints -= 100
+                if self.player.hitpoints == 0:
+                    pg.quit()
+                    print("You ran outta hitpoints!")
+        
+        hits = pg.sprite.spritecollide(self.player, self.static_platforms, False)
+        if hits:
+            self.player.vel.y = 0
+            self.player.pos.y = hits[0].rect.top+1
+        # if posthits:
+        #     self.player.hitpoints -= 0.5
+            # print("hitpoints are now " + str(self.player.hitpoints))
+        if self.player.pos.x >= WIDTH / 1.25:
+            self.player.pos.x = WIDTH / 1.25
+            # set player location based on velocity
+            self.player.pos.x += self.player.vel.x
+            # scroll platswith player
+            for plat in self.platforms:
+                # creates slight scroll based on player y velocity
+                plat.vel.x = -self.player.vel.x
+                if plat.rect.right <= 0:
+                    plat.kill()
+
+        if self.player.hitpoints == 0:
+            pg.quit()
+            print("You ran outta hitpoints!")
 
     def events(self):
         # Game Loop - events
