@@ -4,7 +4,7 @@
 # Player movement
 # © 2019 KidsCanCode LLC / All rights reserved.
 
-# Created by David Nguyen with references coming from Mr. Cozort's Jumpy code
+# Created by David Nguyen with references coming from Mr. Cozort and Mr. Bradfield's code
 
 import pygame as pg
 from pygame.sprite import Group
