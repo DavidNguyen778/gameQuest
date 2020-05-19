@@ -4,6 +4,8 @@
 import pygame as pg
 from pygame.sprite import Sprite
 from settings import *
+import random
+import time
 vec = pg.math.Vector2
 
 class Player(Sprite):
@@ -107,6 +109,44 @@ class Mob(Sprite):
             self.pos.y = 0
         
         self.rect.midbottom = self.pos
+
+class Mob2(Sprite):
+    def __init__(self, game):
+        # Model of Mob
+        Sprite.__init__(self)
+        self.game = game
+        self.image = pg.Surface((25,25))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+
+        self.rect.center = (WIDTH / 5, HEIGHT / 1.1)
+        self.pos = vec(WIDTH / 1, HEIGHT / 1.1)
+        self.vel = vec(0, 0)
+        self.acc = vec(0, 0)
+
+    def update(self):
+        self.acc = vec(0, 0.5)
+        self.vel.x = 2
+        self.vel.y = 1
+        self.acc.y = 0
+        # apply friction
+        self.acc.x += self.vel.x * PLAYER_FRICTION
+        # equations of motion
+        self.vel += self.acc
+        self.pos += self.vel + 0.5 * self.acc
+        # wrap around the sides of the screen
+
+        if self.pos.x > WIDTH:
+            self.pos.x = 0
+        if self.pos.x < 0:
+            self.pos.x = WIDTH
+        if self.pos.y < 50:
+            self.pos.y = HEIGHT
+        if self.pos.y > HEIGHT:
+            self.pos.y = 50
+        
+        self.rect.midbottom = self.pos
+
 
 class Platform(Sprite):
     # Changed platform color to green

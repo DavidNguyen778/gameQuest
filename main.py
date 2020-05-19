@@ -4,8 +4,7 @@
 # Player movement
 # © 2019 KidsCanCode LLC / All rights reserved.
 
-# Week of march 23 - Lore
-# Modularity, Github, import as, 
+# Created by David Nguyen with references coming from Mr. Cozort's Jumpy code
 
 import pygame as pg
 from pygame.sprite import Group
@@ -14,6 +13,7 @@ import random
 from settings import *
 from sprites import *
 
+# Healthbar
 def draw_player_health(surf, x, y, w):
     outline_rect = pg.Rect(x, y, 100, 20)
     fill_rect = pg.Rect(x, y, w, 20)
@@ -39,6 +39,8 @@ class Game:
         self.all_sprites.add(self.player)
         self.mob = Mob(self)
         self.all_sprites.add(self.mob)
+        self.mob2 = Mob2(self)
+        self.all_sprites.add(self.mob2)
         # ground = Platform(0, HEIGHT-40, WIDTH, 40)
         ground = Ground(0, HEIGHT - 50, WIDTH, 50)
         ground.rect.x = 0
@@ -71,26 +73,44 @@ class Game:
     def update(self):
         # Game Loop - Update
         self.all_sprites.update()
-        # Can't add self.mob to spritecollide list?! #
+    # Mob/Player collision
         mhits = pg.sprite.collide_rect(self.player, self.mob)
         if mhits:
             self.player.hitpoints -= 1
             print(self.player.hitpoints)
+            # self.player.vel.x = -5
+            # UNABLE TO MAKE PLAYER HIT MOB ON BOTH SIDES
+            if self.player.rect.right > self.mob.rect.left:
+                print("I hit the mob")
+                self.player.vel.x = -5
+            elif self.player.rect.left < self.mob.rect.right:
+                print("I hit the mob")
+                self.player.vel.x = 5
 
-        # hits = pg.sprite.spritecollide(self.player, self.platforms, False)
-        # if hits:
-        #     if self.player.rect.top > hits[0].rect.top:
-        #         print("i hit my head")
-        #         self.player.vel.y = 15
-        #         self.player.rect.top = hits[0].rect.bottom + 5
-        #         self.player.hitpoints -= 5
-        #         # print("hitpoints are now " + str(self.player.hitpoints))
-        #         # print(self.player.hitpoints)
-        #     # print("it collided")
-        #     else:
-        #         self.player.vel.y = 0
-        #         self.player.pos.y = hits[0].rect.top+1
+            # UNABLE TO MAKE PLAYER KILL MOB
+            # if self.player.rect.bottom >= self.mob.rect.top:
+            #     print("Mob killed")
+            #     self.mob.kill()
+        
+    # Mob 2/Player collision
+        m2hits = pg.sprite.collide_rect(self.player, self.mob2)
+        if m2hits:
+            self.player.hitpoints -= 1
+            print(self.player.hitpoints)
+            # self.player.vel.x = -5
+            # UNABLE TO MAKE PLAYER HIT MOB ON BOTH SIDES
+            if self.player.rect.left < self.mob2.rect.right:
+                print("I hit the mob")
+                self.player.vel.x = 5
+            elif self.player.rect.right > self.mob2.rect.left:
+                print("I hit the mob")
+                self.player.vel.x = -5
 
+            # if self.player.rect.bottom >= self.mob2.rect.top:
+            #     print("Mob killed")
+            #     self.mob.kill()
+
+    # Player/platform collision
         hits = pg.sprite.spritecollide(self.player, self.platforms, False)
         if hits:
             if self.player.rect.top > hits[0].rect.top:
@@ -119,12 +139,14 @@ class Game:
                     pg.quit()
                     print("You ran outta hitpoints!")
         
+    # Player/ground collision
         hits = pg.sprite.spritecollide(self.player, self.static_platforms, False)
         if hits:
+            # UNABLE TO JUMP ON GROUND
             self.player.vel.y = 0
             self.player.pos.y = hits[0].rect.top+1
         # if posthits:
-        #     self.player.hitpoints -= 0.5
+        #     self.player.hitpoints -= 0.5ss
             # print("hitpoints are now " + str(self.player.hitpoints))
         if self.player.pos.x >= WIDTH / 1.25:
             self.player.pos.x = WIDTH / 1.25
@@ -134,8 +156,8 @@ class Game:
             for plat in self.platforms:
                 # creates slight scroll based on player y velocity
                 plat.vel.x = -self.player.vel.x
-                if plat.rect.right <= 0:
-                    plat.kill()
+                # if plat.rect.right <= 0:
+                #     plat.kill()
 
         if self.player.hitpoints == 0:
             pg.quit()
